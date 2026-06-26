@@ -1,0 +1,9 @@
+aiogram
+requests
+psycopg2-binary
+sqlalchemy
+fastapi
+uvicorn
+openpyxl
+apscheduler
+python-dotenv
