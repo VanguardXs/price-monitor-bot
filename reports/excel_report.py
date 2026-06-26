@@ -9,7 +9,7 @@ from database.db import SessionLocal
 from database.models import TrackedProduct, PriceHistory
 
 
-def generate_report():
+def generate_report(telegram_id: int | None = None):
     db = SessionLocal()
     wb = Workbook()
 
@@ -26,7 +26,7 @@ def generate_report():
     ws1 = wb.active
     ws1.title = "Tracked Products"
 
-    headers = ["ID", "Telegram ID", "Query", "Active", "Created At"]
+    headers = headers = ["ID", "Query", "Active", "Created At"]
     for col, header in enumerate(headers, 1):
         cell = ws1.cell(row=1, column=col, value=header)
         cell.fill = header_fill
@@ -34,10 +34,13 @@ def generate_report():
         cell.alignment = Alignment(horizontal="center")
         cell.border = border
 
-    products = db.query(TrackedProduct).all()
+    query = db.query(TrackedProduct).filter(TrackedProduct.is_active == True)
+    if telegram_id is not None:
+        query = query.filter(TrackedProduct.telegram_id == telegram_id)
+    products = query.all()
     for row, p in enumerate(products, 2):
         fill = row_fill_1 if row % 2 == 0 else row_fill_2
-        data = [p.id, p.telegram_id, p.query, "Yes" if p.is_active else "No",
+        data = [p.id, p.query, "Yes" if p.is_active else "No",
                 p.created_at.strftime("%Y-%m-%d %H:%M") if p.created_at else ""]
         for col, value in enumerate(data, 1):
             cell = ws1.cell(row=row, column=col, value=value)
@@ -60,12 +63,15 @@ def generate_report():
         cell.alignment = Alignment(horizontal="center")
         cell.border = border
 
-    history = (
+    history_query = (
         db.query(PriceHistory, TrackedProduct.query)
         .join(TrackedProduct, PriceHistory.tracked_product_id == TrackedProduct.id)
+        .filter(TrackedProduct.is_active == True)
         .order_by(PriceHistory.fetched_at.desc())
-        .all()
     )
+    if telegram_id is not None:
+        history_query = history_query.filter(TrackedProduct.telegram_id == telegram_id)
+    history = history_query.all()
 
     for row, (h, query) in enumerate(history, 2):
         fill = row_fill_1 if row % 2 == 0 else row_fill_2

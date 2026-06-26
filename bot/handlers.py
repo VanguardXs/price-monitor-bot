@@ -313,7 +313,7 @@ async def cb_report(callback):
 async def _send_report(message: Message):
     await message.answer("📊 Generating your report, please wait...")
     try:
-        filepath = generate_report()
+        filepath = generate_report(telegram_id=message.from_user.id)
         file = FSInputFile(filepath)
         await message.answer_document(file, caption="📄 Here's your price report!")
     except Exception:
