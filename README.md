@@ -1,9 +1,11 @@
-# 🤖 Price Monitor Telegram Bot
+# Price Monitor Telegram Bot
 
 A Telegram bot that tracks product prices across Amazon and Google Shopping,
 stores price history in PostgreSQL, and alerts users when prices drop.
 
-## 🚀 Features
+![Bot in action](docs/bot.png)
+
+## Features
 
 - Compare prices across Amazon & Google Shopping in real time
 - Track individual products and get notified on price drops
@@ -12,16 +14,16 @@ stores price history in PostgreSQL, and alerts users when prices drop.
 - Excel reports with price history and trend charts, generated on demand
 - Rate limiting, per-user tracking limits, and daily API quota protection
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 - **Python 3.14**
 - **aiogram** — Telegram Bot framework with FSM for multi-step dialogs
-- **PostgreSQL + SQLAlchemy** — Database
+- **PostgreSQL + SQLAlchemy** — database
 - **OpenPyXL** — Excel reports with charts
-- **APScheduler** — Daily price check automation
+- **APScheduler** — daily price check automation
 - **OpenWebNinja API** — Amazon & Google Shopping data
 
-## 📊 What It Tracks
+## What It Tracks
 
 | Field | Description |
 |-------|-------------|
@@ -31,7 +33,7 @@ stores price history in PostgreSQL, and alerts users when prices drop.
 | Rating / Reviews | Product rating and review count |
 | Price History | Logged on every check for trend analysis |
 
-## 🤖 Bot Commands
+## Bot Commands
 
 | Command | Description |
 |---------|-------------|
@@ -45,7 +47,7 @@ stores price history in PostgreSQL, and alerts users when prices drop.
 | `/report` | Get an Excel report sent to chat |
 | `/help` | Show available commands |
 
-## ⚙️ Installation
+## Installation
 
 ```bash
 git clone https://github.com/VanguardXs/price-monitor-bot.git
@@ -54,48 +56,56 @@ pip install -r requirements.txt
 ```
 
 Create a `.env` file:
+
+```
 TELEGRAM_BOT_TOKEN=your_bot_token
-
 OPENWEBNINJA_API_KEY=your_api_key
-
 DB_HOST=localhost
-
 DB_PORT=5432
-
 DB_NAME=pricebot_db
-
 DB_USER=your_db_user
-
 DB_PASSWORD=your_db_password
-
 DAILY_API_LIMIT=90
+```
 
-## 🔧 Usage
+## Usage
 
 **Initialize the database:**
+
 ```bash
 python -c "from database.db import init_db; init_db()"
 ```
 
 **Run the bot:**
+
 ```bash
 python -m bot.main
 ```
 
 **Run the daily price-check scheduler:**
+
 ```bash
 python -m scheduler.tasks
 ```
 
 **Generate an Excel report manually:**
+
 ```bash
 python -c "from reports.excel_report import generate_report; generate_report()"
 ```
 
-## 🔐 Security
+## Excel Report
+
+![Excel report](docs/excel-report.png)
+
+## Security
 
 - All secrets stored in environment variables, never hardcoded
 - SQLAlchemy ORM used throughout — no raw SQL, no injection risk
-- Per-user rate limiting and tracking limits (max 1000 products/user)
+- Per-user rate limiting and tracking limits
 - Daily API quota tracking to prevent exceeding provider limits
 - User input sanitized and length-limited before storage or display
+
+## License
+
+Released under the [MIT License](LICENSE).
